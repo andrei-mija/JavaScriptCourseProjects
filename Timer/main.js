@@ -16,7 +16,7 @@ class Timer{
     }
 
     tick() {
-        console.log("The timer has ticked");
+        console.log("The timer has ticked once");
     }
 }
 
