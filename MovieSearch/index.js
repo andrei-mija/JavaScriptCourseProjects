@@ -1,4 +1,6 @@
+// creates an object which is basically configures the autocomplete frame that we created
 const autoCompleteConfig = {
+    // how do we want to render the data
     renderOption(movie) {
         const imgSrc = movie.Poster ==='N/A' ? '' : movie.Poster;
         return `
@@ -6,9 +8,11 @@ const autoCompleteConfig = {
             ${movie.Title} (${movie.Year})
         `;
     },
+    // what input do we need to put in the input field after the click
     inputValue(movie) {
         return movie.Title;
     },
+    // function to fetch the necessary data
     async fetchData(searchTerm) {
         const response = await axios.get('http://www.omdbapi.com/', {
             params: {
@@ -24,13 +28,13 @@ const autoCompleteConfig = {
         return response.data.Search;
     }
 };
-
+// call the method
 createAutocomplete({
-    ...autoCompleteConfig,
-    root: document.querySelector('#left-autocomplete'),
+    ...autoCompleteConfig, // take the information form the configuration that we created
+    root: document.querySelector('#left-autocomplete'), // select the element
     onOptionSelect(movie){
-        document.querySelector('.tutorial').classList.add('is-hidden');
-        onMovieSelect(movie, document.querySelector('#left-summary'), 'left');
+        document.querySelector('.tutorial').classList.add('is-hidden'); // hide the tutorial
+        onMovieSelect(movie, document.querySelector('#left-summary'), 'left'); 
     },
 });
 
@@ -46,6 +50,7 @@ createAutocomplete({
 
 let leftMovie;
 let rightMovie;
+// get the search stats for the movie (big stats)
 const onMovieSelect = async (movie, summaryElement, side) => {
     const response = await axios.get('http://www.omdbapi.com/', {
         params: {
@@ -53,7 +58,6 @@ const onMovieSelect = async (movie, summaryElement, side) => {
             i: movie.imdbID
         }
     });
-    console.log(summaryElement);
     summaryElement.innerHTML = movieTemplate(response.data);
     if(side === 'left') {
         leftMovie = response.data;
@@ -66,7 +70,7 @@ const onMovieSelect = async (movie, summaryElement, side) => {
         runComparison();
     }
 };
-
+// compare all the stats
 const runComparison = () => {
     const leftSideStats = document.querySelectorAll('#left-summary .notification');
     const rightSideStats = document.querySelectorAll('#right-summary .notification');
@@ -86,7 +90,13 @@ const runComparison = () => {
         }
     });
 };
-
+/* 
+    Set the template of how we show the statistics.
+    As a smart idea, we have extracted the numbers from the strings that 
+    we have received. Then we set the data-value attribute for each element
+    to the information that we extracted so that they can be used later in
+    the comparison function
+*/
 const movieTemplate = (movieDetail) => {
     const dollar = parseInt(movieDetail.BoxOffice.replace(/\$/g, '').replace(/,/g, ''));
     const metascore = parseInt(movieDetail.Metascore);
