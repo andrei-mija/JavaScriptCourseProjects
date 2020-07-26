@@ -32,3 +32,18 @@ const walls = [
     Bodies.rectangle(width, height/2, 40, height, {isStatic: true})
 ];
 World.add(world, walls);
+
+// Grid generation
+const d = 3; // dimension of the square array
+
+const grid = Array(d)
+    .fill(null)
+    .map(() => Array(d).fill(false));
+
+const verticals = Array(d)
+    .fill(null)
+    .map(() => Array(d-1).fill(false));
+
+const horizontals = Array(d-1)
+    .fill(null)
+    .map(() => Array(d).fill(false));
